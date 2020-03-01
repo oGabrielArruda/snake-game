@@ -6,8 +6,13 @@ def random_grid_position():
     y = random.randint(0, 590)
     return(x//10 * 10, y//10 * 10)
 
-def colisao(c1,c2):
+def colision(c1,c2):
     return (c1[0] == c2[0]) and (c1[1] == c2[1])
+
+def colisionWall(x, y, width, height):
+    if (x == width) or (y==height) or x < 0 or y < 0:
+        return True
+    return False
 
 def getDirection(event):
     if event.key == K_UP:
@@ -19,7 +24,20 @@ def getDirection(event):
     if event.key == K_LEFT:
         key = LEFT
     return key
-        
+
+def changeSnakeDirection(direction):
+    if direction == UP:
+        snake[0] = ((snake[0][0], snake[0][1]-10))
+    if direction == DOWN:
+        snake[0] = ((snake[0][0], snake[0][1]+10))
+    if direction == RIGHT:
+        snake[0] = ((snake[0][0]+10, snake[0][1]))
+    if direction == LEFT:
+        snake[0] = ((snake[0][0]-10, snake[0][1]))
+
+def drawSnakeMovement():
+    for i in range(len(snake) - 1, 0, -1):
+        snake[i] = (snake[i-1][0], snake[i-1][1])
 
 UP = 0
 RIGHT = 1
@@ -48,34 +66,22 @@ while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
-
         if event.type == KEYDOWN:
             direcao = getDirection(event)
             
-    if colisao(snake[0], apple_pos):
+    if colision(snake[0], apple_pos):
         apple_pos = random_grid_position()
         snake.append((0, 0))
 
-    if snake[0][0] == 600 or snake[0][1] == 600 or snake[0][0] < 0 or snake[0][1] < 0:
+    if colisionWall(snake[0][0], snake[0][1], 600, 600):
         pygame.quit()
 
     for i in range(1, len(snake) - 1):
         if snake[0][0] == snake[i][0] and snake[0][1] == snake[i][1]:
             pygame.quit()            
 
-    for i in range(len(snake) - 1, 0, -1):
-        snake[i] = (snake[i-1][0], snake[i-1][1])
-
-    if direcao == UP:
-        snake[0] = ((snake[0][0], snake[0][1]-10))
-    if direcao == DOWN:
-        snake[0] = ((snake[0][0], snake[0][1]+10))
-    if direcao == RIGHT:
-        snake[0] = ((snake[0][0]+10, snake[0][1]))
-    if direcao == LEFT:
-        snake[0] = ((snake[0][0]-10, snake[0][1]))
-
-
+    drawSnakeMovement()
+    changeSnakeDirection(direcao)
     
     screen.fill((0, 0, 0))
     screen.blit(apple, apple_pos)
