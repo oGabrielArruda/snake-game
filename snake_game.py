@@ -9,6 +9,18 @@ def random_grid_position():
 def colisao(c1,c2):
     return (c1[0] == c2[0]) and (c1[1] == c2[1])
 
+def getDirection(event):
+    if event.key == K_UP:
+        key = UP
+    if event.key == K_RIGHT:
+        key = RIGHT
+    if event.key == K_DOWN:
+        key = DOWN
+    if event.key == K_LEFT:
+        key = LEFT
+    return key
+        
+
 UP = 0
 RIGHT = 1
 DOWN = 2
@@ -38,14 +50,7 @@ while True:
             pygame.quit()
 
         if event.type == KEYDOWN:
-            if event.key == K_UP:
-                direcao = UP
-            if event.key == K_RIGHT:
-                direcao = RIGHT
-            if event.key == K_DOWN:
-                direcao = DOWN
-            if event.key == K_LEFT:
-                direcao = LEFT
+            direcao = getDirection(event)
             
     if colisao(snake[0], apple_pos):
         apple_pos = random_grid_position()
